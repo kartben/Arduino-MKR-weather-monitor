@@ -239,19 +239,19 @@ void getWeatherData()
     result.toCharArray(jsonArray,sizeof(jsonArray));
     jsonArray[result.length() + 1] = '\0';
 
-    StaticJsonBuffer<1024> json_buf;
-    JsonObject &root = json_buf.parseObject(jsonArray);
-    if (!root.success())
+    StaticJsonDocument<1024> json_doc;
+    auto error =  deserializeJson(json_doc, jsonArray);
+    if (error)
     {
       Serial.println("parseObject() failed");
     }
 
-    String location = root["city"]["name"];
-    String temperature = root["list"]["main"]["temp"];
-    String weather = root["list"]["weather"]["main"];
-    String description = root["list"]["weather"]["description"];
-    String idString = root["list"]["weather"]["id"];
-    String timeS = root["list"]["dt_txt"];
+    String location = json_doc["city"]["name"];
+    String temperature = json_doc["list"]["main"]["temp"];
+    String weather = json_doc["list"]["weather"]["main"];
+    String description = json_doc["list"]["weather"]["description"];
+    String idString = json_doc["list"]["weather"]["id"];
+    String timeS = json_doc["list"]["dt_txt"];
 
     timeS = convertGMTTimeToLocal(timeS);
 
